@@ -1,0 +1,6 @@
+.idea/
+venv/
+*.zip
+*.txt
+*.docx
+*.pdf

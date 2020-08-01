@@ -1,0 +1,8 @@
+*.zip
+*.txt
+*.docx
+*.pdf
+*.vcd
+test_output
+*.out
+*.png

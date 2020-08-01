@@ -1,0 +1,12 @@
+#!MLF!#
+.\tst\f\ak\1237743.txt
+two
+three
+four
+seven
+three
+eight
+two
+one
+eight
+.
