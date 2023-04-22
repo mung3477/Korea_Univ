@@ -413,3 +413,8 @@ MigrationBackup/
 *.pdf
 *.zip
 *.vscode/
+
+# Mac
+.DS_Store
+
+임시필기/
