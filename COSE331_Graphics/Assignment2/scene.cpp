@@ -92,23 +92,23 @@ void Scene::mouseMoveEvents(float x, float y) {
     lastMouseX = x;
     lastMouseY = y;
 
-    mat4 viewMat = lookAt(Scene::camera->eye, Scene::camera->at, Scene::camera->up);
-    mat4 projMat = perspective(radians(Scene::camera->fovy), Scene::camera->aspect, Scene::camera->zNear, Scene::camera->zFar);
-    mat4 axis_inv = mat4({-1.0f, 0.0f, 0.0f, 0.0f},
-                         {0.0f, 1.0f, 0.0f, 0.0f},
-                         {0.0f, 0.0f, 1.0f, 0.0f},
-                         {0.0f, 0.0f, 0.0f, 1.0f});
-    projMat = axis_inv * projMat;
+    mat3 viewMat = lookAt(Scene::camera->eye, Scene::camera->at, Scene::camera->up);
+    mat3 axis_inv = mat3({-1.0f, 0.0f, 0.0f},
+                         {0.0f, 1.0f,  0.0f},
+                         {0.0f, 0.0f, 1.0f});
+    viewMat = axis_inv * viewMat;
 
     vec3 v_last = glm::normalize(vec3(lastPosX, lastPosY, \
         sqrt(glm::max(1 - pow(lastPosX, 2) - pow(lastPosY, 2), 0.0))));
     vec3 v_cur = glm::normalize(vec3(curPosX, curPosY, \
         sqrt(glm::max(1 - pow(curPosX, 2) - pow(curPosY, 2), 0.0))));
+
     vec3 rot_axis = vec4(cross(v_last, v_cur), 1.0f);
+    vec3 world_axis = glm::inverse(viewMat) * rot_axis;
 
     float angle = glm::acos(dot(v_last, v_cur));
-    mat4 rotate = glm::rotate(angle, rot_axis);
+    mat4 rotate = glm::rotate(angle, world_axis);
 
-    Scene::light->position = vec3(glm::inverse(viewMat) * glm::inverse(projMat) * rotate * projMat * viewMat * vec4(Scene::light->position, 1.0f));
+    Scene::light->position = vec3(rotate * vec4(Scene::light->position, 1.0f));
     //////////////////////////////
 }
