@@ -103,27 +103,25 @@ int main(int argc, char* argv[]) {
 		// record time duration
 		while (1) {
 			calc();
+			info.calc_total += 1;
 			clock_gettime(CLOCK_MONOTONIC, &clk_glb);
 			clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &clk_proc);
 			epoch_time = time_diff(0, &clk_proc) - info.total_epoch_dur;
-			// if the program is executed more than given execution time, stops running.
-			if (time_diff(&init, &clk_glb) > exec_time) {
-				exit(1);
-			}
-			info.calc_count += 1;
-			
+
 			// record every 100ms
 			if (epoch_time >= 100) {
-				print_msg(info.proc_num, info.calc_count, epoch_time, 0);
-
-				info.calc_total += info.calc_count;
-				info.calc_count = 0;
 				info.total_epoch_dur += epoch_time;
+				print_msg(info.proc_num, info.calc_total, epoch_time, 0);
+				epoch_time = 0;
 			}
-			
-			info.calc_total += 1;
-		}
-		print_msg(info.proc_num, info.calc_total, info.total_epoch_dur, 1);
+
+			// if the program is executed more than given execution time, stops running.
+			if (time_diff(&init, &clk_glb) > exec_time) {
+				info.total_epoch_dur += epoch_time;
+				print_msg(info.proc_num, info.calc_total, info.total_epoch_dur, 1);
+				exit(1);
+			}
+		}	
 	}
 	else {
 		for (int i = 1; i <= total_procs; i++)
