@@ -18,11 +18,11 @@ touch 100ms_result.txt
 gcc cpu.c
 
 # 1ms timeslice
-echo 1 > /proc/sys/kernel/sched_rr_timeslice_ms
-sudo ./a.out 2 $EXEC_TIME > 1ms_output.txt
+sudo echo 1 > /proc/sys/kernel/sched_rr_timeslice_ms
+sudo ./a.out 2 $EXEC_TIME | sed -n '/total/p' > 1ms_output.txt
 for (( c=1; c<=$ITER; c++))
 do
-	sudo ./a.out 2 $EXEC_TIME >> 1ms_output.txt
+	sudo ./a.out 2 $EXEC_TIME | sed -n '/total/p' >> 1ms_output.txt
 done
 
 # 1ms output data analysis
@@ -37,11 +37,11 @@ grep "Total" 1ms_result.txt | awk '{ arr[NR] = $3 } END { print arr[1] / arr[2] 
 dmesg -C
 
 # 10ms timeslice
-echo 10 > /proc/sys/kernel/sched_rr_timeslice_ms
-sudo ./a.out 2 $EXEC_TIME > 10ms_output.txt
+sudo echo 10 > /proc/sys/kernel/sched_rr_timeslice_ms
+sudo ./a.out 2 $EXEC_TIME | sed -n '/total/p' > 10ms_output.txt
 for (( c=1; c<=$ITER; c++))
 do
-	sudo ./a.out 2 $EXEC_TIME >> 10ms_output.txt
+	sudo ./a.out 2 $EXEC_TIME | sed -n '/total/p' >> 10ms_output.txt
 done
 
 # 10ms output data analysis
@@ -56,11 +56,11 @@ grep "Total" 10ms_result.txt | awk '{ arr[NR] = $3 } END { print arr[1] / arr[2]
 dmesg -C
 
 # 100ms timeslice
-echo 100 > /proc/sys/kernel/sched_rr_timeslice_ms
-sudo ./a.out 2 $EXEC_TIME > 100ms_output.txt
+sudo echo 100 > /proc/sys/kernel/sched_rr_timeslice_ms
+sudo ./a.out 2 $EXEC_TIME | sed -n '/total/p' > 100ms_output.txt
 for (( c=1; c<=$ITER; c++))
 do
-	sudo ./a.out 2 $EXEC_TIME >> 100ms_output.txt
+	sudo ./a.out 2 $EXEC_TIME > | sed -n '/total/p' >> 100ms_output.txt
 done
 
 # 100ms output data analysis
