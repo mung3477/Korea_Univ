@@ -1,4 +1,4 @@
-PROCESS #0 average calculation on 100ms: 7353.2
-PROCESS #1 average calculation on 100ms: 7348
-Total calculation: 14701.2
-Total CPUburst: 358117
+PROCESS #0 average calculation on 100ms: 36501.6
+PROCESS #1 average calculation on 100ms: 24168.4
+Total calculation: 60670
+Total CPUburst: 1494513
