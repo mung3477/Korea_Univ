@@ -30,7 +30,7 @@ struct sched_attr {
 	uint64_t	sched_period;
 };
 
-int			forked_procs; 
+int			forked_procs;
 Proc_info	info;
 int			epoch_time;
 int			pid = -1;
@@ -60,7 +60,7 @@ void calc(void) {
 
 void print_msg(int proc, int count, int time, int is_total) {
 	printf("PROCESS #%d  ", proc);
-	if (is_total) 
+	if (is_total)
 		printf("total");
 	printf("Count = %d  Time = %d\n", count, time);
 }
@@ -93,10 +93,10 @@ int main(int argc, char* argv[]) {
 	pid = getpid();
 	init_info(&info);
 	clock_gettime(CLOCK_MONOTONIC, &init);
-	memset(&attr, 0, sizeof(attr));
+	memset(&attr, 0, sizeof(attr)); // 구조체 초기화
 	attr.size = sizeof(attr);
-	attr.sched_policy = SCHED_RR;
-	attr.sched_priority = 10;
+	attr.sched_policy = SCHED_RR;; // Round robin으로 설정
+	attr.sched_priority = 10;;  // 현재 프로세스 및 이후 fork되는 프로세스의 priority를 10으로 설정
 
 	// set scheduling policy
 	if (syscall(SYS_sched_setattr, getpid(), &attr, 0) == -1) {
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 			break;
 		forked_procs += 1;
 	}
-	
+
 	if (pid == 0) {
 		// record time duration
 		while (1) {
@@ -138,7 +138,7 @@ int main(int argc, char* argv[]) {
 				end_process(SIGINT);
 		}
 	}
-	else 
+	else
 		end_process(SIGINT);
 	return (0);
 }

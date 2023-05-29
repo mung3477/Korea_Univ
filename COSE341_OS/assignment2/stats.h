@@ -215,6 +215,7 @@ static inline void sched_info_depart(struct rq *rq, struct task_struct *t)
 	if (t->state == TASK_RUNNING)
 		sched_info_queued(rq, t);
 
+	// #[2019320110] [정우성]
 	if (t->rt_priority == 10) {
 		printk("[Pid: %d], CPUburst: %lld , rt_priority: %u\n", t->pid, delta / 1000000, t->rt_priority);
 	}

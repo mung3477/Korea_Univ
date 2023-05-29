@@ -2,6 +2,7 @@
 ITER=5
 EXEC_TIME=300
 
+# set cpu core number to 1
 cd /sys/fs/cgroup/cpuset
 mkdir -p mycpu; cd mycpu
 echo 0 > cpuset.cpus
@@ -9,6 +10,7 @@ echo 0 > cpuset.mems
 echo $$ > tasks
 cat tasks
 
+# Clean previous experiment's result
 sudo dmesg -C
 
 cd ~/Desktop/KU/COSE341_OS/assignment2
