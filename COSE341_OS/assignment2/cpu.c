@@ -8,6 +8,7 @@
 #include <sys/syscall.h>
 #include <sched.h>
 #include <errno.h>
+#include <signal.h>
 #define ROW (100)
 #define COL ROW
 
@@ -28,6 +29,12 @@ struct sched_attr {
 	uint64_t	sched_deadline;
 	uint64_t	sched_period;
 };
+
+int			forked_procs; 
+Proc_info	info;
+int			epoch_time;
+int			pid = -1;
+int			status;
 
 void init_info(Proc_info *info) {
 	info->proc_num = -1;
@@ -64,16 +71,26 @@ int	time_diff(struct timespec* begin, struct timespec* end) {
 	return (end->tv_sec - begin->tv_sec) * 1000 + (end->tv_nsec - begin->tv_nsec) / 1000000;
 }
 
+void end_process(int signo) {
+	if (pid == 0) {
+		info.total_epoch_dur += epoch_time;
+		print_msg(info.proc_num, info.calc_total, info.total_epoch_dur, 1);
+		exit(1);
+	}
+	else {
+		for (int i = 1; i <= forked_procs; i++)
+			wait(&status);
+	}
+}
+
 int main(int argc, char* argv[]) {
-	Proc_info			info;
 	int					total_procs = atoi(argv[1]);
 	int					exec_time = atoi(argv[2]) * 1000;
-	int					pid;
-	int					status;
-	int					epoch_time;
 	struct timespec		init, clk_proc, clk_glb;
 	struct sched_attr	attr;
 
+	signal(SIGINT, (void *)end_process);
+	pid = getpid();
 	init_info(&info);
 	clock_gettime(CLOCK_MONOTONIC, &init);
 	memset(&attr, 0, sizeof(attr));
@@ -97,6 +114,7 @@ int main(int argc, char* argv[]) {
 		}
 		if (pid == 0)
 			break;
+		forked_procs += 1;
 	}
 	
 	if (pid == 0) {
@@ -116,16 +134,11 @@ int main(int argc, char* argv[]) {
 			}
 
 			// if the program is executed more than given execution time, stops running.
-			if (time_diff(&init, &clk_glb) > exec_time) {
-				info.total_epoch_dur += epoch_time;
-				print_msg(info.proc_num, info.calc_total, info.total_epoch_dur, 1);
-				exit(1);
-			}
-		}	
+			if (time_diff(&init, &clk_glb) > exec_time)
+				end_process(SIGINT);
+		}
 	}
-	else {
-		for (int i = 1; i <= total_procs; i++)
-			wait(&status);
-	}
+	else 
+		end_process(SIGINT);
 	return (0);
 }
