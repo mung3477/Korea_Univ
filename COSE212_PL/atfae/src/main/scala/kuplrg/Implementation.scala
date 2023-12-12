@@ -62,8 +62,8 @@ object Implementation extends Template {
     case Match(expr, mcases) => typeCheck(expr, tenv) match
       case NameT(name)                          =>
                                                     val adt = tenv.tys.getOrElse(name, error(s"unknown type"))
-                                                    val xs = mcases.map(_.name).toSet
-                                                    if (adt.keySet != xs || adt.size != xs.size) error(s"invalid type")
+                                                    val names = mcases.map(_.name).toSet
+                                                    if (adt.keySet != names || names.size != mcases.length) error(s"invalid type")
                                                     mcases.map {
                                                       case MatchCase(name, params, body) => typeCheck(body, tenv.addVars(params.zip(adt(name))))
                                                     }.reduce((lty, rty) => { mustSame(lty, rty); lty })
